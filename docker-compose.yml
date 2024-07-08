@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  backend.api:
+    image: backend.api.image
+    container_name: backend.api.container
+    build: ./server
+    ports:
+      - "7500:80"
+    environment:
+      - SECRET_KEY=48619d05440fae6b440c4416bd51cb82d236bb1bb4337cced967ed5a6d9ad388
+      - TZ=America/Santiago
+      - DATABASE_URL=postgresql://postgres:WxJHehShZN@postgresql:5432/app.storage
+    volumes:
+      - ./server/application/src/static/:/fastapi/server/storage/static/
+    depends_on:
+      - postgresql
+
+  postgresql:
+    image: postgresql.image
+    container_name: postgresql.container
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=WxJHehShZN
+      - POSTGRES_DB=app.storage
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

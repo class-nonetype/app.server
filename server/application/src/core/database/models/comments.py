@@ -1,0 +1,25 @@
+import sqlalchemy
+import uuid
+from src.core.utils import get_datetime
+from src.core.database.base import base as Base
+
+from src.core.database.models.user_accounts import UserAccounts
+
+
+class Comments(Base):
+    __tablename__ = 'comments'
+
+    id = sqlalchemy.Column(sqlalchemy.dialects.postgresql.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+
+    user_id = sqlalchemy.Column(sqlalchemy.dialects.postgresql.UUID(as_uuid=True), sqlalchemy.ForeignKey(UserAccounts.id), nullable=False)
+
+
+    full_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    text = sqlalchemy.Column(sqlalchemy.Text, nullable=True)
+
+    active = sqlalchemy.Column(sqlalchemy.Boolean, default=True, nullable=False)
+
+    created_at = sqlalchemy.Column(sqlalchemy.DateTime, default=get_datetime())
+    updated_at = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True, default=get_datetime())
+
+    user_account_relation = sqlalchemy.orm.relationship('UserAccounts', backref='user_comment', uselist=False, foreign_keys=[user_id])
